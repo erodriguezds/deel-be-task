@@ -38,6 +38,28 @@ app.get('/contracts',getProfile ,async (req, res) =>{
     })
     if(!contracts) return res.status(404).end()
     res.json(contracts)
-})
+});
+
+app.get('/jobs/unpaid',getProfile ,async (req, res) =>{
+    try {
+        const {Contract, Job} = req.app.get('models');
+        const {id} = req.params;
+        // we trust there can't be SQL injection below because we're using data from the profile object
+        const subquery = `SELECT id FROM Contracts WHERE (ContractorId = ${req.profile.id} OR ClientId = ${req.profile.id}) AND status <> 'terminated'`;
+        const jobs = await Job.findAll({
+            where: {
+                paid: null,
+                ContractId: {
+                    [Op.in]: sequelize.literal(`(${subquery})`)
+                },
+            }
+        })
+        res.json(jobs)
+
+    } catch(error) {
+        return res.status(500).json({error : error.message});
+    }
+    
+});
 
 module.exports = app;
