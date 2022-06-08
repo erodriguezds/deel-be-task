@@ -10,6 +10,7 @@ app.set('sequelize', sequelize)
 app.set('models', sequelize.models)
 
 require("./routes/jobs")(app);
+require("./routes/profiles")(app);
 
 /**
  * FIX ME!
