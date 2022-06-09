@@ -11,6 +11,7 @@ app.set('models', sequelize.models)
 
 require("./routes/jobs")(app);
 require("./routes/profiles")(app);
+require("./routes/admin")(app);
 
 /**
  * FIX ME!
