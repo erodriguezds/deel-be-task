@@ -2,6 +2,28 @@ const { getProfile } = require('./../middleware/getProfile');
 const { Op } = require("sequelize");
 
 module.exports = function(app){
+
+    app.get('/jobs',getProfile ,async (req, res) =>{
+        try {
+            const { Job } = req.app.get('models');
+            const sequelize = req.app.get('sequelize');
+
+            // we trust there can't be SQL injection below because we're using data from the profile object
+            const subquery = `SELECT id FROM Contracts WHERE (ContractorId = ${req.profile.id} OR ClientId = ${req.profile.id}) AND status <> 'terminated'`;
+            const jobs = await Job.findAll({
+                where: {
+                    ContractId: {
+                        [Op.in]: sequelize.literal(`(${subquery})`)
+                    },
+                }
+            })
+            res.json(jobs)
+    
+        } catch(error) {
+            return res.status(500).json({error : error.message});
+        }
+    });
+
     app.get('/jobs/unpaid',getProfile ,async (req, res) =>{
         try {
             const { Job } = req.app.get('models');
@@ -36,23 +58,24 @@ module.exports = function(app){
                 return res.status(400).json({message: `Only client's can pay a job. Your user's current type is '${user.type}'`});
             }
 
-            const job = await Job.findOne({
-                where: {
-                    id
-                },
-                include: Contract
-            });
-
-            if(job.Contract.ClientId !== user.id){
-                return res.status(403).end();
-            }
-
-            if(job.paid){
-                return res.status(400).json({message: `Job is already paid`});
-            }
-
             // do the fun stuff
             const tResult = await sequelize.transaction(async t => {
+
+                const job = await Job.findOne({
+                    where: {
+                        id
+                    },
+                    include: Contract,
+                    transaction: t,
+                });
+    
+                if(job.Contract.ClientId !== user.id){
+                    throw new Error(`Your current profile is not related to the provided job id`);
+                }
+    
+                if(job.paid){
+                    throw new Error(`Job is already paid`);
+                }
                 
                 // deduct  balance from client
                 await Profile.update(
@@ -111,6 +134,11 @@ module.exports = function(app){
                         transaction: t
                     }
                 );
+
+                return {
+                    newBalance: client.balance,
+                }
+                
               });
 
             res.json({
