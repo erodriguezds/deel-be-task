@@ -94,5 +94,17 @@ module.exports = function(app){
         }
     });
 
+    app.get('/profiles', async (req, res) => {
+        try {
+            const { Profile } = req.app.get('models');
+            const profiles = await Profile.findAll();
+
+            return res.json(profiles);
+
+        } catch(error){
+            return res.status(500).json({error : error.message});
+        }
+    });
+
 
 }

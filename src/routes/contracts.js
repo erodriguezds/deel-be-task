@@ -15,8 +15,17 @@ module.exports = function(app){
     })
 
     app.get('/contracts',getProfile ,async (req, res) =>{
-        const {Contract} = req.app.get('models')
-        const {id} = req.params
+        const { Contract } = req.app.get('models');
+
+        // available relations to eager-load
+        const relations = Object.keys(Contract.associations);
+
+        // allow clients to specify, via query param, the relations to eager-load
+        // (required by the front-end ;-)
+        const include = (req.query.include || "")
+            .split(',')
+            .filter(model => relations.includes(model));
+
         const contracts = await Contract.findAll({
             where: {
                 status: {
@@ -26,8 +35,9 @@ module.exports = function(app){
                     {ContractorId: req.profile.id},
                     {ClientId: req.profile.id}
                 ]
-            }
-        })
+            },
+            include
+        });
         if(!contracts) return res.status(404).end()
         res.json(contracts)
     });
