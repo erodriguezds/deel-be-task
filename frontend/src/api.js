@@ -54,6 +54,12 @@ const api = {
     },
     payJob(id){
         return this.post(`/jobs/${id}/pay`);
+    },
+    getBestProfessions(start, end){
+        return this.get(`/admin/best-profession?start=${start}&end=${end}`);
+    },
+    getBestClients(start, end, limit = 2){
+        return this.get(`/admin/best-clients?start=${start}&end=${end}&limit=${limit}`);
     }
 }
 

@@ -5,6 +5,8 @@ import Navbar from 'react-bootstrap/Navbar';
 import Contracts from '../components/Contracts';
 import Jobs from '../components/Jobs';
 import BalanceBox from '../components/widgets/BalanceBox';
+import BestClients from '../components/widgets/BestClients';
+import BestProfession from '../components/widgets/BestProffesion';
 import AuthContext from '../context/AuthContext';
 
 
@@ -30,17 +32,26 @@ export default function Dashboard(props){
                 </Container>
             </Navbar>
             <Container>
-            <Row>
-                <Col md={3}>
-                    <BalanceBox balance={profile.balance} allowAdd={isClient}/>
-                </Col>
-                <Col md={4}>
-                    <Contracts />
-                </Col>
-                <Col md={5}>
-                    <Jobs />
-                </Col>
-            </Row>
+                <Row>
+                    <Col lg={3} sm={5}>
+                        <BalanceBox balance={profile.balance} allowAdd={isClient}/>
+                    </Col>
+                    <Col lg={4} sm={7}>
+                        <Contracts />
+                    </Col>
+                    <Col lg={5} sm={12}>
+                        <Jobs />
+                    </Col>
+                </Row>
+                <Row>
+                    
+                    <Col lg={4}>
+                        <BestProfession/>
+                    </Col>
+                    <Col lg={4}>
+                        <BestClients/>
+                    </Col>
+                </Row>
             </Container>
         </>
     );
