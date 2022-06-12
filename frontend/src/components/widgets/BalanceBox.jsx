@@ -4,9 +4,7 @@ import Swal from 'sweetalert2'
 import api from "../../api";
 import AuthContext from "../../context/AuthContext";
 
-//const MySwal = withReactContent(Swal)
-
-
+import formatter from "../../util/currencyFormatter";
 
 export default function BalanceBox(){
 
@@ -28,7 +26,7 @@ export default function BalanceBox(){
                 </div>
                 }
                 <h5 className="text-muted fw-normal mt-0" title="Current Balance">Current Balance</h5>
-                <h3 className="mt-3 mb-3">{`$ ${balance}`}</h3>
+                <h3 className="mt-3 mb-3">{`${formatter.format(balance)}`}</h3>
                 <p className="mb-0 text-muted">
                     <span className="text-success me-2"><i className="mdi mdi-arrow-up-bold"></i> 5.27%</span>
                     <span className="text-nowrap">Since last month</span>  

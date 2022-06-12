@@ -11,7 +11,9 @@ import AuthContext from '../context/AuthContext';
 export default function Dashboard(props){
     
     const { profile, logout } = useContext(AuthContext);
-    const isClient = (profile.type === 'client');
+    const isClient = (profile && profile.type === 'client');
+
+    if(!profile) return null;
 
     return (
         <>

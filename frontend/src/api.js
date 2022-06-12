@@ -25,6 +25,12 @@ const api = {
             ...customAxiosOptions
         }).then(res => res.data);
     },
+    /**
+     * Get's current user's profile data
+     */
+    getProfile(){
+        return this.get(`/profiles/${defaultRequestOptions.headers.profile_id}`);
+    },
     setAuth(profileId){
         console.log("Setting new token: ", profileId);
         defaultRequestOptions.headers.profile_id = profileId;

@@ -106,5 +106,20 @@ module.exports = function(app){
         }
     });
 
+    app.get('/profiles/:id', async (req, res) => {
+        try {
+            const { Profile } = req.app.get('models');
+            const id = parseInt(req.params.id);
+            const profile = await Profile.findOne({
+                where: { id }
+            });
+
+            return res.json(profile);
+
+        } catch(error){
+            return res.status(500).json({error : error.message});
+        }
+    });
+
 
 }

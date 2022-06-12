@@ -92,7 +92,7 @@ module.exports = function(app){
                     }
                 );
 
-                // add balance to congtractor
+                // add balance to contractor
                 await Profile.update(
                     // changes
                     {
@@ -116,7 +116,7 @@ module.exports = function(app){
                 });
 
                 if(client.balance < 0){
-                    throw new Error("Insufficient balance");
+                    throw new Error(`Insufficient balance. Job price: ${job.price}, current client balance: ${client.balance}`);
                 }
 
                 // finally, update job as paid
@@ -138,7 +138,7 @@ module.exports = function(app){
                 return {
                     newBalance: client.balance,
                 }
-                
+
               });
 
             res.json({
